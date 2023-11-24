@@ -235,30 +235,22 @@
             hole.classList.add('playing');
         }
 
+        function startSpinnerAnimation() {
+            var log = document.querySelector("#log");
 
-       
-
-Draggable.create("#draggableDonut", {
-    type: "rotation",
-    inertia: true,
-    onDrag: updateRotation,
-    onThrowUpdate: updateRotation
-});
-
-function updateRotation() {
-    log.innerHTML = this.rotation.toFixed(1);
-    
-    // Add or remove 'playing' class based on the playing state
-    var isPlaying = wavesurfer.isPlaying();
-    var donutContainer = document.querySelector("#draggableDonut");
-    
-    if (isPlaying) {
-        donutContainer.classList.add('playing');
-    } else {
-        donutContainer.classList.remove('playing');
+            // GSAP TweenMax animation
+            gsap.to("#spinner .big-circle", {
+                rotation: 360,
+                transformOrigin: "center",
+                ease: "linear",
+                repeat: -1,
+                onUpdate: function () {
+                    log.innerHTML = (parseInt(log.innerHTML) + 1) % 360;
+                }
+            });
+        }
     }
-}
-    }
+
    </script>
 
 <style>

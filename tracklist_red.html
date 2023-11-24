@@ -32,10 +32,13 @@
    </div>
 
    <script>
-    var playBtn = document.getElementById("playBtn");
-    var playBtn2 = document.getElementById("playBtn2");
-    var playBtn3 = document.getElementById("playBtn3");
-    var item4 = document.getElementById("item4");
+       var playBtn = document.getElementById("playBtn");
+        var stopBtn = document.getElementById("stopBtn");
+        var playBtn2 = document.getElementById("playBtn2");
+        var stopBtn2 = document.getElementById("stopBtn2");
+        var playBtn3 = document.getElementById("playBtn3");
+        var stopBtn3 = document.getElementById("stopBtn3");
+        var item4 = document.getElementById("item4");
 
     var wavesurfer1 = WaveSurfer.create({
         container: '#waveform',
@@ -173,26 +176,20 @@
             hole.classList.add('playing');
         }
 
-Draggable.create("#draggableDonut", {
-    type: "rotation",
-    inertia: true,
-    onDrag: updateRotation,
-    onThrowUpdate: updateRotation
-});
+        function startSpinnerAnimation() {
+            var log = document.querySelector("#log");
 
-function updateRotation() {
-    log.innerHTML = this.rotation.toFixed(1);
-    
-    // Add or remove 'playing' class based on the playing state
-    var isPlaying = wavesurfer.isPlaying();
-    var donutContainer = document.querySelector("#draggableDonut");
-    
-    if (isPlaying) {
-        donutContainer.classList.add('playing');
-    } else {
-        donutContainer.classList.remove('playing');
-    }
-}
+            // GSAP TweenMax animation
+            gsap.to("#spinner .big-circle", {
+                rotation: 360,
+                transformOrigin: "center",
+                ease: "linear",
+                repeat: -1,
+                onUpdate: function () {
+                    log.innerHTML = (parseInt(log.innerHTML) + 1) % 360;
+                }
+            });
+        }
     }
 
    </script>

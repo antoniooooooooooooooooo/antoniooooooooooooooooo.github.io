@@ -114,6 +114,18 @@ body {
   cursor: pointer;
 }
 
+#stopBtn{
+  cursor: pointer;
+}
+
+#stopBtn2{
+cursor: pointer;
+}
+
+#stopBtn3{
+cursor: pointer;
+}
+
 #item6 {
   grid-area: item6;
   grid-row-start: 4;
