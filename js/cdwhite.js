@@ -59,7 +59,7 @@ document.getElementById("container3Dwhite").appendChild(renderer.domElement);
 camera.position.z = objToRender === "cdwhite" ? 25 : 200;
 
 //Add lights to the scene, so we can actually see the 3D model
-const topLight = new THREE.DirectionalLight(0xffffff, 3); // (color, intensity)
+const topLight = new THREE.DirectionalLight(0xffffff, 2); // (color, intensity)
 topLight.position.set(500, 500, 500) //top-left-ish
 scene.add(topLight);
 
