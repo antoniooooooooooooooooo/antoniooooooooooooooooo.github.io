@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>António Simões</title>
+    <link rel="stylesheet" href="css/tracklist_red.css">
+    <script src='https://unpkg.com/wavesurfer.js'></script>
+</head>
+<body>
+   <div class="container">
+    <div id="item1"><header onclick="goToHome()">TRACKLIST</header></div>
+    <div id="item2"><p id="playBtn">Faixa 1</p></div>
+    <div id="item5">
+        <div id="waveform"></div>
+    </div>
+    <div id="item3"><p id="stopBtn">01:52</p></div>
+
+    <div id="item6"><p id="playBtn2">Faixa 2</p></div>
+    <div id="item8">
+        <div id="waveform2"></div>
+    </div>
+    <div id="item7"><p id="stopBtn2">03:46</p></div>
+
+    <div id="item9"><p id="playBtn3">Faixa 3</p></div>
+    <div id="item11">
+        <div id="waveform3"></div>
+    </div>
+    <div id="item10"><p id="stopBtn3">02:55</p></div>
+    <div id="item4">
+        <div class="circle"> <div class="circle2"></div></div>
+    </div>
+   </div>
+
+   <script>
+    var playBtn = document.getElementById("playBtn");
+    var playBtn2 = document.getElementById("playBtn2");
+    var playBtn3 = document.getElementById("playBtn3");
+    var item4 = document.getElementById("item4");
+
+    var wavesurfer1 = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: 'black',
+        progessColor: '#FFFFFF',
+        barWidth: 0,
+        height: 60,
+        responsive: true,
+        hideScrollbar: true,
+        barRadius: 4,
+        autoCenter: true
+    });
+
+    var wavesurfer2 = WaveSurfer.create({
+        container: '#waveform2',
+        waveColor: 'black',
+        progessColor: '#FFFFFF',
+        barWidth: 0,
+        height: 60,
+        responsive: true,
+        hideScrollbar: true,
+        barRadius: 4,
+        autoCenter: true
+    });
+
+    var wavesurfer3 = WaveSurfer.create({
+        container: '#waveform3',
+        waveColor: 'black',
+        progessColor: '#FFFFFF',
+        barWidth: 0,
+        height: 60,
+        responsive: true,
+        hideScrollbar: true,
+        barRadius: 4,
+        autoCenter: true
+    });
+
+    wavesurfer1.load('assets/faixa1vermelho.mp3');
+    wavesurfer2.load('assets/faixa2vermelho.mp3');
+    wavesurfer3.load('assets/faixa3vermelho.mp3'); 
+
+    var donutRotation = 0;
+    var holeRotation = 0;
+
+    playBtn.onclick = function () {
+        wavesurfer1.playPause();
+        updateItem4(wavesurfer1);
+        stopAllAndPlay(wavesurfer1);
+    };
+
+    stopBtn.onclick = function () {
+        wavesurfer1.stop();
+    };
+
+    playBtn2.onclick = function () {
+        wavesurfer2.playPause();
+        updateItem4(wavesurfer2);
+        stopAllAndPlay(wavesurfer2);
+    };
+
+    stopBtn2.onclick = function () {
+        wavesurfer2.stop();
+    };
+
+    playBtn3.onclick = function () {
+        wavesurfer3.playPause();
+        updateItem4(wavesurfer3);
+        stopAllAndPlay(wavesurfer3);
+    };
+
+    stopBtn3.onclick = function () {
+        wavesurfer3.stop();
+    };
+
+    function stopAllAndPlay(wavesurferToPlay) {
+        // Stop all instances
+        wavesurfer1.stop();
+        wavesurfer2.stop();
+        wavesurfer3.stop();
+
+        // Play the specified instance
+        wavesurferToPlay.playPause();
+
+        // Update the donut
+        updateItem4(wavesurferToPlay);
+    }
+
+    function updateItem4(wavesurfer) {
+        // Check if Wavesurfer is currently playing
+        var isPlaying = wavesurfer.isPlaying();
+
+        // Calculate the rotation angles based on the current time
+        if (isPlaying) {
+            var currentTime = wavesurfer.getCurrentTime();
+            donutRotation = (currentTime % 5) * (360 / 5); // Assuming a 5-second spin duration
+            holeRotation = (currentTime % 5) * (360 / 5); // Adjust as needed
+        }
+
+        // Replace the content of item4 with the new donut structure
+        item4.innerHTML = `
+            <div class="donut-container ${isPlaying ? 'playing' : ''}" id="draggableDonut">
+                <div class="donut" style="transform: rotate(${donutRotation}deg);">
+                    <div class="hole ${isPlaying ? 'playing' : ''}" style="transform: rotate(${holeRotation}deg);"></div>
+                </div>
+            </div>
+        `;
+
+        // Apply styles to the new donut structure
+        var donutContainer = item4.querySelector('.donut-container');
+        donutContainer.style.position = 'sticky';
+        donutContainer.style.bottom = '10px';
+        donutContainer.style.left = '10px';
+        donutContainer.style.width = '30em';
+        donutContainer.style.height = '30em';
+
+        var donut = item4.querySelector('.donut');
+        donut.style.width = '100%';
+        donut.style.height = '100%';
+        donut.style.borderRadius = '50%';
+        donut.style.backgroundColor = 'black';
+        donut.style.position = 'relative';
+
+        var hole = item4.querySelector('.hole');
+        hole.style.width = '12%';
+        hole.style.height = '12%';
+        hole.style.borderRadius = '50%';
+        hole.style.backgroundColor = 'rgb(255, 0, 0)';
+        hole.style.position = 'absolute';
+        hole.style.top = '65%'; // Always center the hole vertically
+        hole.style.left = '65%'; // Always center the hole horizontally
+
+        if (isPlaying) {
+            // Resume spinning animation
+            donutContainer.classList.add('playing');
+            hole.classList.add('playing');
+        }
+
+Draggable.create("#draggableDonut", {
+    type: "rotation",
+    inertia: true,
+    onDrag: updateRotation,
+    onThrowUpdate: updateRotation
+});
+
+function updateRotation() {
+    log.innerHTML = this.rotation.toFixed(1);
+    
+    // Add or remove 'playing' class based on the playing state
+    var isPlaying = wavesurfer.isPlaying();
+    var donutContainer = document.querySelector("#draggableDonut");
+    
+    if (isPlaying) {
+        donutContainer.classList.add('playing');
+    } else {
+        donutContainer.classList.remove('playing');
+    }
+}
+    }
+
+   </script>
+
+<style>
+    .donut-container.playing .donut {
+        animation: spin 5s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .donut-container.playing .hole {
+        animation: spinHole 5s linear infinite;
+    }
+
+    @keyframes spinHole {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(-360deg); /* Negative direction to make it spin in the opposite direction */
+        }
+    }
+
+    @media only screen and (max-width: 750px) {
+        .donut-container {
+            width: 9em !important;
+            height: 9em !important;
+        }
+    }
+</style>
+<script>
+    function goToHome() {
+        window.location.href = 'index.html';
+    }
+   </script>
+</body>
+</html>
